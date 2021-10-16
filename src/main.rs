@@ -1,16 +1,31 @@
-use std::fs::File;
-use ron::ser::to_writer;
-use ron::Value;
-use serde_json::from_reader as json_from_reader;
+use std::fs::read_to_string;
+use criterion::{criterion_group, Criterion, BenchmarkId, PlottingBackend};
 
-const MIN_NUM_VALUE: usize = 10_000;
-
-fn gen_value(num: usize) -> Value {
-    Value::Bool(true)
+fn ron_de_legacy(content: &str) -> impl Sized {
+    ron::from_str::<ron::Value>(content)
 }
 
-// Convert .json to .ron
+fn ron_de_reboot(content: &str) -> impl Sized {
+    ron_reboot::from_str::<ron::Value>(content)
+}
+
+fn bench_serde_de(c: &mut Criterion) {
+    let mut group = c.benchmark_group("Serde Deserialization");
+    for i in ["data/canada.ron"].iter() {
+        let content = read_to_string(i).unwrap();
+        group.bench_with_input(BenchmarkId::new("ron", i), &content,
+                               |b, i| b.iter(|| ron_de_legacy(i)));
+        group.bench_with_input(BenchmarkId::new("ron-reboot", i), &content,
+                               |b, i| b.iter(|| ron_de_reboot(i)));
+    }
+    group.finish();
+}
+
+criterion_group!(benches, bench_serde_de);
+//criterion_main!(benches);
+
 fn main() {
-    let value: serde_json::Value = json_from_reader(File::open("data/canada.json").unwrap()).unwrap();
-    to_writer(File::create("data/canada.ron").unwrap(), &value).unwrap();
+    benches();
+
+    Criterion::default().configure_from_args().plotting_backend(PlottingBackend::Plotters).final_summary();
 }

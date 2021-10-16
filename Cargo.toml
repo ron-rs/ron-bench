@@ -3,9 +3,22 @@ name = "ron-bench"
 version = "0.1.0"
 edition = "2018"
 
+default-run = "ron-bench"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[[bin]]
+name = "ron-bench"
+path = "src/main.rs"
+
+[[bin]]
+name = "convert-json"
+path = "src/bin/convert-json.rs"
+test = false
+bench = false
+
 [dependencies]
+criterion = { version = "*", features = ["html_reports"] }
 ron = { git = "https://github.com/ron-rs/ron" }
 ron-reboot = { git = "https://github.com/ron-rs/ron-reboot" }
 serde_json = "*"
