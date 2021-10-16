@@ -1,0 +1,14 @@
+[attr]saneWs text eol=lf whitespace=tab-in-indent,space-before-tab,blank-at-eol,-blank-at-eof,tabwidth=4
+
+* text=auto eol=lf
+*.rs saneWs
+*.ron saneWs
+*.toml saneWs
+*.md saneWs
+Cargo.lock text
+
+.gitattributes saneWs
+.gitignore saneWs
+
+/data/*.json binary
+/data/*.ron binary
