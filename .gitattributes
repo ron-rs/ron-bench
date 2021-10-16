@@ -7,6 +7,8 @@
 *.md saneWs
 Cargo.lock text
 
+LICENSE saneWs
+
 .gitattributes saneWs
 .gitignore saneWs
 
